@@ -18,6 +18,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\LUDecomposition.h" />
+    <ClInclude Include="Source\Primes.h" />
+    <ClInclude Include="Source\Profiler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Profiler.cpp" />
+    <ClCompile Include="Source\sieve_cpp.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C3308D21-DDCA-4E13-B143-D7C8D4D8F6CA}</ProjectGuid>
     <RootNamespace>CPAR_2</RootNamespace>
@@ -111,15 +120,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Profiler.cpp" />
-    <ClCompile Include="sieve_cpp.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Primes.h" />
-    <ClInclude Include="Profiler.h" />
-    <ClInclude Include="LUDecomposition.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
