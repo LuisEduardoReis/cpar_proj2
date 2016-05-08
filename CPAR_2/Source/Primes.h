@@ -39,8 +39,7 @@ namespace CPAR
 				for (size_t i = k*k; i <= maximumLimit; i += k)
 				{
 					// If even, continue:
-					if (i % 2 == 0)
-						continue;
+					if (i % 2 == 0)	continue;
 
 					primes[(i - 3) >> 1] = true;
 				}
@@ -59,8 +58,7 @@ namespace CPAR
 				for (size_t i = k*k; i <= maximumLimit; i += k)
 				{
 					// If even, continue:
-					if (i % 2 == 0)
-						continue;
+					if (i % 2 == 0)	continue;
 
 					primes[(i - 3) >> 1] = true;
 				}
