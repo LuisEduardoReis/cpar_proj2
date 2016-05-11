@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
 	// Calculate primes
 	Profiler profiler;
-	vector<bool> primesBooleanList;
+	shared_ptr<bool> primesBooleanList;
 	size_t size;
 	{
 		// Start profiler:
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 	}
 
 	// Convert list of booleans to integers:
-	auto primes = ConvertToNumbers(primesBooleanList, size);
+	auto primes = ConvertToNumbers(primesBooleanList.get(), size);
 
 	cout << "Number of primes found: " << primes.size() << endl;
 	cout << "Elapsed time: " << profiler.ElapsedTime<double, ratio<1>>().count() << " seconds" << endl;

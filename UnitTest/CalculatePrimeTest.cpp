@@ -27,9 +27,10 @@ namespace UnitTest
 			primesBooleanList[9] = true;	// 21
 
 			auto primes = ConvertToNumbers(primesBooleanList.get(), size);
-			Assert::AreEqual(static_cast<size_t>(7), primes.size());
+			Assert::AreEqual(static_cast<size_t>(8), primes.size());
 			
 			auto prime = primes.begin();
+			Assert::AreEqual(static_cast<size_t>(2), *prime++);
 			Assert::AreEqual(static_cast<size_t>(3), *prime++);
 			Assert::AreEqual(static_cast<size_t>(5), *prime++);
 			Assert::AreEqual(static_cast<size_t>(7), *prime++);
@@ -48,9 +49,10 @@ namespace UnitTest
 			CalculatePrimes(maximumLimit, primesBooleanList, size, 0);
 			
 			auto primes = ConvertToNumbers(primesBooleanList.get(), size);
-			Assert::AreEqual(static_cast<size_t>(14), primes.size());
+			Assert::AreEqual(static_cast<size_t>(15), primes.size());
 
 			auto prime = primes.begin();
+			Assert::AreEqual(static_cast<size_t>(2), *prime++);
 			Assert::AreEqual(static_cast<size_t>(3), *prime++);
 			Assert::AreEqual(static_cast<size_t>(5), *prime++);
 			Assert::AreEqual(static_cast<size_t>(7), *prime++);
@@ -65,6 +67,18 @@ namespace UnitTest
 			Assert::AreEqual(static_cast<size_t>(41), *prime++);
 			Assert::AreEqual(static_cast<size_t>(43), *prime++);
 			Assert::AreEqual(static_cast<size_t>(47), *prime);
+		}
+
+		TEST_METHOD(PrimeHugeTest)
+		{
+			size_t maximumLimit = static_cast<size_t>(pow(10, 6));
+
+			shared_ptr<bool> primesBooleanList;
+			size_t size;
+			CalculatePrimes(maximumLimit, primesBooleanList, size, 0);
+
+			auto primes = ConvertToNumbers(primesBooleanList.get(), size);
+			Assert::AreEqual(static_cast<size_t>(78498), primes.size());
 		}
 	};
 }

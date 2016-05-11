@@ -2,10 +2,12 @@
 
 #include <list>
 #include <vector>
+#include <memory>
+#include <cstring>
 
 namespace CPAR
 {
-	inline std::list<size_t> ConvertToNumbers(const std::vector<bool>& primes, size_t size)
+	inline std::list<size_t> ConvertToNumbers(const bool* primes, size_t size)
 	{
 		using namespace std;
 
@@ -21,12 +23,15 @@ namespace CPAR
 		return output;
 	}
 
-	inline void CalculatePrimes(size_t maximumLimit, std::vector<bool>& result, size_t& size, size_t ompThreads)
+	inline void CalculatePrimes(size_t maximumLimit, std::shared_ptr<bool>& result, size_t& size, size_t ompThreads)
 	{
 		using namespace std;
 
 		size = maximumLimit / static_cast<size_t>(2) - static_cast<size_t>(1);
-		result = vector<bool>(size);
+		result = shared_ptr<bool>(new bool[size], default_delete<bool[]>());
+		
+		auto primes = result.get();
+		memset(primes, 0, size);
 
 		if(ompThreads == 0)
 		{
@@ -39,12 +44,11 @@ namespace CPAR
 					if (i % static_cast<size_t>(2) == static_cast<size_t>(0))
 						continue;
 
-					result[(i - static_cast<size_t>(3)) >> static_cast<size_t>(1)] = true;
+					primes[(i - static_cast<size_t>(3)) >> static_cast<size_t>(1)] = true;
 				}
 
-
 				// Find lowest unmarked number:
-				do { k += static_cast<size_t>(2); } while (result[(k - static_cast<size_t>(3)) >> static_cast<size_t>(1)]);
+				do { k += static_cast<size_t>(2); } while (primes[(k - static_cast<size_t>(3)) >> static_cast<size_t>(1)]);
 			};
 		}
 		else
@@ -59,12 +63,12 @@ namespace CPAR
 					if (i % 2 == 0)
 						continue;
 
-					result[(i - 3) >> 1] = true;
+					primes[(i - 3) >> 1] = true;
 				}
 
 
 				// Find lowest unmarked number:
-				do { k += 2; } while (result[(k - 3) >> 1]);
+				do { k += 2; } while (primes[(k - 3) >> 1]);
 			};
 		}
 	}
