@@ -18,10 +18,8 @@ int main(int argc, char** argv)
 	
 	// Parse range:
 	int range = atoi(argv[1]);
-	if (range > 32) 
-		range = 32;
-	else if (range < 1) 
-		range = 1;
+	if (range > 32) range = 32;
+	else if (range < 1) range = 1;
 
 	// Define the superior limit:
 	size_t maximumLimit = static_cast<size_t>(1) << static_cast<size_t>(range);
