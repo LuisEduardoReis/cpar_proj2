@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 		profiler.Start();
 
 		// Calculate primes:
-		CalculatePrimes(static_cast<size_t>(pow(10, 10)), primesBooleanList, size, ompThreads);
+		CalculatePrimes(maximumLimit, primesBooleanList, size, ompThreads);
 
 		// End profiler:
 		profiler.End();
