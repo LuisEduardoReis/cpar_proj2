@@ -45,8 +45,9 @@ int main(int argc, char** argv) {
 		if (k*k > N) break;
 		
 		// Find j
-		int j;
-		for(j = k*k; j < BLOCK_LOW(rank,N,size); j+=k);
+		int j = BLOCK_LOW(rank,N,size);
+		if (j % k != 0) j = BLOCK_LOW(rank,N,size) + k - (BLOCK_LOW(rank,N,size) % k);
+		if (j < k*k) j = k*k;
 		
 		// Mark multiples in [k^2, N]:
 		for (int i = j; i <= BLOCK_HIGH(rank,N,size); i += k)
@@ -59,11 +60,11 @@ int main(int argc, char** argv) {
 	int sum = 0, sum_r;
 	for(int i = ((rank==0) ? 2 : 0); i < BLOCK_SIZE(rank,N,size); i++) {
 		if (!primes[i]) {
-			printf("%d ",i+BLOCK_LOW(rank,N,size));
+			//printf("%d ",i+BLOCK_LOW(rank,N,size));
 			sum++;
 		}
 	}
-	printf("\n");
+	//printf("\n");
 	MPI_Reduce(&sum,&sum_r,1,MPI_INT,MPI_SUM,0,MPI_COMM_WORLD);
 	if (rank==0) printf("Nº primes: %d\n", sum_r);	
 
