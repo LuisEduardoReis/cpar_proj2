@@ -13,6 +13,8 @@
 #include <stdio.h> 
 #include "mpi.h" 
 
+using namespace std;
+
 int main(int argc, char** argv) {
 	
 	// Return if wrong number of arguments:
@@ -31,6 +33,7 @@ int main(int argc, char** argv) {
 	size_t N_odd = N/2 -1; 
 
     int rank, size, value; 
+    timespec Time1, Time2;
     
     MPI_Init( &argc, &argv ); 
     MPI_Comm_size( MPI_COMM_WORLD, &size ); 
@@ -38,6 +41,8 @@ int main(int argc, char** argv) {
 
 	// Init
 	std::vector<bool> primes(BLOCK_SIZE(rank,N,size),false);
+	
+	if (rank == 0) clock_gettime(CLOCK_REALTIME, &Time1);
 
 	int k = 2;
 	for (;;) {
@@ -55,7 +60,7 @@ int main(int argc, char** argv) {
 
 		// Find lowest unmarked number
 		if (rank == 0)
-			do { k++;} while (primes[k]);
+			do { k++;} while (primes[k-BLOCK_LOW(rank,N,size)]);
 	};
 	int sum = 0, sum_r;
 	for(int i = ((rank==0) ? 2 : 0); i < BLOCK_SIZE(rank,N,size); i++) {
@@ -66,7 +71,15 @@ int main(int argc, char** argv) {
 	}
 	//printf("\n");
 	MPI_Reduce(&sum,&sum_r,1,MPI_INT,MPI_SUM,0,MPI_COMM_WORLD);
-	if (rank==0) printf("Nº primes: %d\n", sum_r);	
+	
+	if (rank==0) {
+		clock_gettime(CLOCK_REALTIME, &Time2);
+		double t1 = Time1.tv_sec + ((double)Time1.tv_nsec)/1e9;
+		double t2 = Time2.tv_sec + ((double)Time2.tv_nsec)/1e9;
+		
+		cout << sum_r << " ";
+		cout << (t2-t1)	<< endl;
+	} 
 
     MPI_Finalize(); 
     return 0; 
