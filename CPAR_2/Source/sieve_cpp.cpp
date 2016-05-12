@@ -9,45 +9,52 @@ using namespace std;
 
 int main(int argc, char** argv) 
 {
-	// Return if wrong number of arguments:
-	if (argc < 2)
-	{
-		cout << "usage: range [omp_threads]" << endl;
-		return -1;
-	}
-	
-	// Parse range:
-	int range = atoi(argv[1]);
-	if (range > 32) range = 32;
-	else if (range < 1) range = 1;
+	do {
+		// Input
+		size_t range, n_omp;
+		if (argc >= 2) {
+			range = atoi(argv[1]);
+			
+			if (argc < 3) n_omp = 0;
+			else n_omp = atoi(argv[2]);
+			
+			if (range > 32) range = 32;
+			if (range < 1) range = 1;
+		} else {
+			if (!(cin >> range)) break;
+			if (!(cin >> n_omp)) break;
+		};
 
-	// Define the superior limit:
-	size_t maximumLimit = static_cast<size_t>(1) << static_cast<size_t>(range);
+		// Define the superior limit:
+		size_t limit = static_cast<size_t>(1) << range;	
 
-	// Parse the number of OMP Threads to use:
-	size_t ompThreads = argc < 3 ? 0 : atoi(argv[2]);
+		// Calculate primes
+		Profiler profiler;
+		shared_ptr<bool> primesBooleanList;
+		size_t size;
+		{
+			// Start profiler:
+			profiler.Start();
 
-	// Calculate primes
-	Profiler profiler;
-	shared_ptr<bool> primesBooleanList;
-	size_t size;
-	{
-		// Start profiler:
-		profiler.Start();
+			// Calculate primes:
+			CalculatePrimes(limit, primesBooleanList, size, n_omp);
 
-		// Calculate primes:
-		CalculatePrimes(maximumLimit, primesBooleanList, size, ompThreads);
+			// End profiler:
+			profiler.End();
+		}
+		
 
-		// End profiler:
-		profiler.End();
-	}
+		// Convert list of booleans to integers:
+		//auto primes = ConvertToNumbers(primesBooleanList.get(), size);
 
-	// Convert list of booleans to integers:
-	auto primes = ConvertToNumbers(primesBooleanList.get(), size);
+		// Output
+		cout << range << " ";
+		cout << n_omp << " ";
+		cout << CountPrimes(primesBooleanList.get(), size) << " ";
+		cout << profiler.ElapsedTime<double, ratio<1>>().count();
+		cout << endl;
 
-	cout << "Number of primes found: " << primes.size() << endl;
-	cout << "Elapsed time: " << profiler.ElapsedTime<double, ratio<1>>().count() << " seconds" << endl;
-	cin.get();
+	} while(argc < 2);
 
 	return 0;
 }
