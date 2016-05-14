@@ -45,7 +45,11 @@ int main(int argc, char** argv)
 		
 
 		// Convert list of booleans to integers:
-		//auto primes = ConvertToNumbers(primesBooleanList.get(), size);
+		/*auto primes = ConvertToNumbers(primesBooleanList.get(), size);
+		for(size_t i = 0; i < primes.size(); i++) {
+			cout << primes[i] << " ";
+		}
+		cout << endl;*/
 
 		// Output
 		cout << range << " ";

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <list>
 #include <vector>
 #include <memory>
 #include <cstring>
@@ -25,10 +24,7 @@ namespace CPAR
 		if(n_omp == 0)	{
 			for (size_t k = 3; k*k <= limit; ) {
 				// Mark multiples in [k^2, limit]:
-				for (size_t i = k*k; i <= limit; i += k)	{
-					// If even, continue:
-					if (i & 1 == 0)	continue;
-
+				for (size_t i = k*k; i <= limit; i += 2*k)	{
 					// Mark
 					primes[NUM_2_MEM(i)] = true;
 				}
@@ -40,10 +36,7 @@ namespace CPAR
 			for (size_t k = 3; k*k <= limit; ) {
 				// Mark multiples in [k^2, limit]:
 				#pragma omp parallel for num_threads(n_omp)
-				for (size_t i = k*k; i <= limit; i += k)	{
-					// If even, continue:
-					if (i & 1 == 0)	continue;
-
+				for (size_t i = k*k; i <= limit; i += 2*k)	{
 					// Mark
 					primes[NUM_2_MEM(i)] = true;
 				}
@@ -54,11 +47,11 @@ namespace CPAR
 		}
 	}
 	
-	inline std::list<size_t> ConvertToNumbers(const bool* primes, size_t size)
+	inline std::vector<size_t> ConvertToNumbers(const bool* primes, size_t size)
 	{
 		using namespace std;
 
-		auto output = list<size_t>();
+		auto output = vector<size_t>();
 		output.push_back(2);
 
 		for (size_t i = 0; i < size; ++i)
