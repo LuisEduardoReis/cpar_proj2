@@ -11,8 +11,8 @@ int main(int argc, char** argv) {
 	int min_cores = atoi(argv[3]);
 	int max_cores = atoi(argv[4]);
 	
-	for(int i = min_size; i <= max_size; i++) {
-		for(int j = min_cores; j <= max_cores; j++) {
+	for(int j = min_cores; j <= max_cores; j++) {
+		for(int i = min_size; i <= max_size; i++) {		
 			cout << i << " " << j << endl;
 		}
 	}

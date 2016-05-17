@@ -27,8 +27,7 @@ int main(int argc, char** argv) {
 	else if (range < 1) range = 1;
 
 	// Define the superior limit:
-	size_t N = (1 << range); 
-	size_t N_odd = N/2 -1; 
+	size_t N = ((size_t)1) << range; 
 	
 	// Parse n_omp option
 	int n_omp = 0;
@@ -39,26 +38,27 @@ int main(int argc, char** argv) {
 	// Parse separate_search option
 	bool separate_search = false;
 	if (argc >= 4) {
-		separate_search = strcmp("1",argv[3]);
+		separate_search = (strcmp("1",argv[3]) == 0);
 	}
 
     int rank, size, value; 
-    timespec Time1, Time2;
     
     MPI_Init( &argc, &argv ); 
     MPI_Comm_size( MPI_COMM_WORLD, &size ); 
     MPI_Comm_rank( MPI_COMM_WORLD, &rank ); 
-
-	if (size*size > N) {
-		if (rank == 0) cout << "Too many processes for given arguments!" << endl;
-		return -1;
-	}
+    
+    timespec Time1, Time2;
+	clock_gettime(CLOCK_REALTIME, &Time1);	
 
 	// Init
 	std::vector<bool> primes(BLOCK_SIZE(rank,N,size),false);
 	std::vector<bool> seed_primes(BLOCK_SIZE(0,N,size),false);
 		
-	if (rank == 0) clock_gettime(CLOCK_REALTIME, &Time1);
+	if (size*size > N) {
+		cout << "Too many processes for given arguments!" << endl;
+		return -1;
+	}		
+		
 	int k = 2;
 	for (;;) {
 		if (!separate_search) MPI_Bcast(&k,1,MPI_INT,0, MPI_COMM_WORLD);
@@ -97,20 +97,16 @@ int main(int argc, char** argv) {
 	}
 	//printf("\n");
 	MPI_Reduce(&sum,&sum_r,1,MPI_INT,MPI_SUM,0,MPI_COMM_WORLD);
-	
-	if (rank==0) {
+	if (rank == 0) {
 		clock_gettime(CLOCK_REALTIME, &Time2);
 		double t1 = Time1.tv_sec + ((double)Time1.tv_nsec)/1e9;
 		double t2 = Time2.tv_sec + ((double)Time2.tv_nsec)/1e9;
 		
-		cout << range << " ";
-		cout << size  << " ";
-		cout << n_omp << " ";
-		cout << (separate_search ? 1:0) << " ";		
-		cout << sum_r << " ";
-		cout << (t2-t1)	<< endl;
-	} 
+		cout << sum_r << " ";		
+		cout << (t2-t1) << endl;	
+	}
 
-    MPI_Finalize(); 
+    MPI_Finalize();        	
+	
     return 0; 
 } 
